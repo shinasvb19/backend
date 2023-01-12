@@ -73,7 +73,8 @@ const commentPost = async (req, res) => {
   try {
     const post = await Post.findById(req.body.id);
     // console.log(post);
-    const { id, userId, comment } = req.body;
+    const { id, comment } = req.body;
+    const userId = mongoose.Types.ObjectId(req.body.userId);
     const comments = { userId: userId, comment: comment };
     await post.updateOne({ $push: { comments: comments } });
     const updatedPost = await Post.findById(req.body.id);
@@ -90,16 +91,24 @@ const commentGet = async (req, res) => {
   try {
     const data = await Post.aggregate([
       { $match: { _id: id } },
+      { $unwind: "$comments" },
+      {
+        $project: {
+          user: "$comments.userId",
+          comment: "$comments.comment",
+        },
+      },
       {
         $lookup: {
           from: "users",
-          localField: "userId",
+          localField: "user",
           foreignField: "_id",
-          as: "user",
+          as: "foundUser",
         },
       },
     ]);
-    const comment = data[0];
+    const comment = data;
+    console.log(comment);
 
     res.status(200).json(comment);
   } catch (err) {
