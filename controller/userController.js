@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const { findByIdAndUpdate, findById } = require("../models/user");
+const JWT = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const landingPage = (req, res) => {
   res.json("this is landing page");
 };
@@ -11,7 +12,7 @@ const posts = (req, res) => {
 exports.posts = posts;
 
 const register = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -50,33 +51,6 @@ const signin = async (req, res) => {
 };
 exports.signin = signin;
 
-const userUpdate = async (req, res) => {
-  const id = req.body.id;
-  const userId = req.params.id;
-  if (id == userId || req.body.isAdmin) {
-    if (req.body.password) {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-      } catch (err) {
-        return res.json(err);
-      }
-    }
-    try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
-        $set: req.body,
-      });
-
-      res.status(200).json("Account has been updated");
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  } else {
-    return res.status(403).json("you can update only your account");
-  }
-};
-exports.userUpdate = userUpdate;
-
 const removeAccount = async (req, res) => {
   if (req.body.id === req.params.id) {
     try {
@@ -90,7 +64,7 @@ const removeAccount = async (req, res) => {
   }
 };
 exports.removeAccount = removeAccount;
-console.log("clikkkekekekkdkdk");
+// console.log("clikkkekekekkdkdk");
 const userGet = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -145,3 +119,21 @@ const unFollow = async (req, res) => {
   }
 };
 exports.unFollow = unFollow;
+
+const profile = async (req, res) => {
+  try {
+    const token = req.headers["x-custom-header"];
+    // console.log(token);
+    const decode = JWT.verify(token, "abcd1234");
+    const id = mongoose.Types.ObjectId(decode.UserInfo.id);
+    // console.log(id);
+
+    const user = await User.findById(id);
+    // console.log(user);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.profile = profile;

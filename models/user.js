@@ -53,6 +53,20 @@ const userSchema = new Schema(
     from: {
       type: String,
     },
+    education: {
+      type: String,
+    },
+    experience: {
+      type: String,
+    },
+    skills: {
+      trype: Array,
+      default: [],
+    },
+    institutions: {
+      type: Array,
+      default: [],
+    },
     refreshToken: [String],
   },
   { timestamps: true }

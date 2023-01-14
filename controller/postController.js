@@ -25,6 +25,9 @@ const getPosts = async (req, res) => {
 
     const data = await Post.aggregate([
       {
+        $sort: { createdAt: -1 },
+      },
+      {
         $lookup: {
           from: "users",
           localField: "userId",
@@ -68,7 +71,7 @@ const likePost = async (req, res) => {
 exports.likePost = likePost;
 
 const commentPost = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const post = await Post.findById(req.body.id);
@@ -86,7 +89,7 @@ const commentPost = async (req, res) => {
 exports.commentPost = commentPost;
 
 const commentGet = async (req, res) => {
-  console.log(req.query);
+  // console.log(req.query);
   const id = mongoose.Types.ObjectId(req.query.id);
   try {
     const data = await Post.aggregate([
@@ -108,7 +111,7 @@ const commentGet = async (req, res) => {
       },
     ]);
     const comment = data;
-    console.log(comment);
+    // console.log(comment);
 
     res.status(200).json(comment);
   } catch (err) {

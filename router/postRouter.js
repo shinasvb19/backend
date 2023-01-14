@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const postController = require("../controller/postController");
+// const verifyJwt = require("../middleware/verifyJwt");
 router.get("/", postController.getPosts);
 router.post("/like", postController.likePost);
 router.post("/comment", postController.commentPost);
