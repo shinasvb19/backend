@@ -2,6 +2,11 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const mongoose = require("mongoose");
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const serviceSid = process.env.TWILIO_AUTH_SERVICE_SID;
+const client = require("twilio")(accountSid, authToken);
 const landingPage = (req, res) => {
   res.json("this is landing page");
 };
@@ -27,7 +32,18 @@ const register = async (req, res) => {
       from: req.body.from,
     });
     await user.save();
-    res.json({ status: true });
+    const response = await sendOtp(req.body.mobile);
+    if (response.status === true) {
+      res.status(201).json({
+        message: `successfully signup  and `,
+        otpStatus: `sending to${req.body.mobile} `,
+      });
+    } else {
+      res.status(400).json({
+        message: `twlio error or sever down  `,
+        otpStatus: `sending to${req.body.mobile} `,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -137,3 +153,55 @@ const profile = async (req, res) => {
 };
 
 exports.profile = profile;
+
+const allProfile = async (req, res) => {
+  // console.log(req.params.id);
+  try {
+    const profile = await User.findById(req.params.id);
+    res.status(200).json(profile);
+  } catch {
+    res.status(500).json(err);
+  }
+};
+exports.allProfile = allProfile;
+const otpVerify = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { mobile, otp } = req.body;
+    const response = await otpVerifyFunction(otp, mobile);
+    console.log("response of otp", response);
+    if (response.status === true) {
+      const user = await User.findOneAndUpdate({ mobile }, { verified: true });
+      res.status(200).json(true);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "otp failed", error: error.massage });
+  }
+};
+exports.otpVerify = otpVerify;
+
+async function sendOtp(mobile) {
+  mobile = Number(mobile);
+
+  try {
+    const verification = await client.verify.v2
+      .services(serviceSid)
+      .verifications.create({ to: `+91${mobile}`, channel: "sms" });
+    return { status: true, verification };
+  } catch (error) {
+    return { status: false, error };
+  }
+}
+async function otpVerifyFunction(otp, mobile) {
+  console.log(mobile);
+  const verification_check = await client.verify.v2
+    .services(serviceSid)
+    .verificationChecks.create({ to: `+91${mobile}`, code: otp });
+  console.log("verifcation ckeck otp  ", verification_check.status);
+  if (verification_check.status == "approved") {
+    return { status: true };
+  } else {
+    return { status: false };
+  }
+}

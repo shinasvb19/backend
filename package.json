@@ -20,6 +20,7 @@
     "mongoose": "^6.8.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
-    "react-router-dom": "^6.6.1"
+    "react-router-dom": "^6.6.1",
+    "twilio": "^3.84.1"
   }
 }

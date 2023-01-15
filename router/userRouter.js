@@ -8,8 +8,9 @@ router.post("/register", userController.register);
 router.post("/signin", userController.signin);
 router.get("/users", userController.userGet);
 router.get("/profile", userController.profile);
-
+router.get("/profile/:id", userController.allProfile);
 router.delete("/:id", userController.removeAccount);
 router.get("/follow/:id", userController.followUser);
 router.get("/unfollow/:id", userController.unFollow);
+router.post("/otp/verify", userController.otpVerify);
 module.exports = router;

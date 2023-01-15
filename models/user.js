@@ -67,8 +67,13 @@ const userSchema = new Schema(
       type: Array,
       default: [],
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     refreshToken: [String],
   },
+
   { timestamps: true }
 );
 

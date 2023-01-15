@@ -7,7 +7,7 @@ const userUpdate = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id);
   console.log(req.body);
-
+  const { education, institution } = req.body;
   try {
     const result = await User.findByIdAndUpdate(
       req.params.id,
@@ -18,7 +18,9 @@ const userUpdate = async (req, res) => {
         upsert: true,
       }
     );
-
+    const Edu = await result.updateOne({
+      $push: { institutions: institution },
+    });
     res.status(200).json(true);
   } catch (err) {
     return res.status(500).json(err);
