@@ -71,6 +71,9 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    cv: {
+      type: String,
+    },
     refreshToken: [String],
   },
 

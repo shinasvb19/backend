@@ -19,6 +19,7 @@ const posts = async (req, res) => {
 exports.posts = posts;
 
 const getPosts = async (req, res) => {
+  console.log("hello");
   try {
     const skip = req.query.skip ? Number(req.query.skip) : 0;
     const DEFAULT_LIMIT = 8;

@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const { findById } = require("../models/job");
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -80,19 +81,22 @@ const removeAccount = async (req, res) => {
   }
 };
 exports.removeAccount = removeAccount;
-// console.log("clikkkekekekkdkdk");
+
 const userGet = async (req, res) => {
+  // console.log("clikkkekekekkdkdk");
   try {
-    const user = await User.findById(req.params.id);
-    const { password, updatedAt, ...other } = user._doc;
-    res.status(200).json(other);
+    const user = await User.find();
+    // const { password, updatedAt, ...other } = user._doc;
+    res.status(200).json(user);
   } catch (err) {
+    // console.log(err);
     res.status(500).json(err);
   }
 };
 exports.userGet = userGet;
 
 const followUser = async (req, res) => {
+  console.log("here is follow");
   if (req.body.user !== req.params.id) {
     console.log(req.params);
     console.log(req.body);
@@ -119,6 +123,7 @@ const followUser = async (req, res) => {
 exports.followUser = followUser;
 
 const unFollow = async (req, res) => {
+  console.log("object");
   if (req.body.user !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
@@ -141,6 +146,7 @@ const unFollow = async (req, res) => {
 exports.unFollow = unFollow;
 
 const profile = async (req, res) => {
+  console.log("object adadadad");
   try {
     const token = req.headers["x-custom-header"];
     // console.log(token);
@@ -159,7 +165,7 @@ const profile = async (req, res) => {
 exports.profile = profile;
 
 const allProfile = async (req, res) => {
-  // console.log(req.params.id);
+  console.log("ddddd");
   try {
     const profile = await User.findById(req.params.id);
     res.status(200).json(profile);
@@ -209,3 +215,17 @@ async function otpVerifyFunction(otp, mobile) {
     return { status: false };
   }
 }
+
+const user = async (req, res) => {
+  console.log(req.params.id);
+  try {
+    const data = await User.findById({
+      _id: mongoose.Types.ObjectId(req.params.id),
+    });
+    res.status(200).json(data);
+  } catch (err) {
+    console.log(err);
+    res.status(404);
+  }
+};
+exports.user = user;

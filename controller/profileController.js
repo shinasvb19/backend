@@ -2,8 +2,6 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 
 const userUpdate = async (req, res) => {
-  console.log("wwwwwwwowoowowoowowo");
-
   const id = req.params.id;
   const user = await User.findById(id);
   console.log(req.body);
