@@ -148,8 +148,8 @@ exports.unFollow = unFollow;
 const profile = async (req, res) => {
   console.log("object adadadad");
   try {
-    const token = req.headers["x-custom-header"];
-    // console.log(token);
+    const token = req.headers.authorization.split(" ")[1];
+    // console.log("dadadad", token);
     const decode = JWT.verify(token, "abcd1234");
     const id = mongoose.Types.ObjectId(decode.UserInfo.id);
     // console.log(id);
