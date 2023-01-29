@@ -15,6 +15,7 @@ const jobRouter = require("./router/jobRouter");
 const chatRouter = require("./router/chatRouter");
 const messageRouter = require("./router/messageRoute");
 const adminRouter = require("./router/adminRouter");
+const saveROuter = require("./router/saveRouter");
 const connectDb = require("./config/config");
 app.use(express.json());
 dotenv.config();
@@ -31,6 +32,7 @@ app.use("/profile", profileRoutes);
 app.use("/post", postRoutes);
 app.use("/chat", chatRouter);
 app.use("/admin", adminRouter);
+app.use("/save", saveROuter);
 app.use(cors(corsOptions));
 app.listen(5000, () => {
   console.log("up and running !!!!");

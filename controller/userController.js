@@ -12,10 +12,10 @@ const landingPage = (req, res) => {
   res.json("this is landing page");
 };
 exports.landingPage = landingPage;
-const posts = (req, res) => {
-  res.json("this is post page");
-};
-exports.posts = posts;
+// const posts = (req, res) => {
+//   res.json("this is post page");
+// };
+// exports.posts = posts;
 
 const register = async (req, res) => {
   // console.log(req.body);
@@ -84,8 +84,10 @@ exports.removeAccount = removeAccount;
 
 const userGet = async (req, res) => {
   // console.log("clikkkekekekkdkdk");
+  // console.log("mateeeo ahehaha", req.id);
   try {
-    const user = await User.find();
+    const user = await User.find({ _id: { $nin: req.id } });
+    console.log(user);
     // const { password, updatedAt, ...other } = user._doc;
     res.status(200).json(user);
   } catch (err) {

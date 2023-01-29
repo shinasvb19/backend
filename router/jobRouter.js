@@ -7,9 +7,10 @@ const {
   applyJob,
   getJobAplications,
 } = require("../controller/jobController");
+const verifyJWT = require("../middleware/verifyJwt");
 
-router.post("/", jobPost);
-router.get("/", getJobs);
-router.get("/application/:id", getJobAplications);
-router.post("/apply", applyJob);
+router.post("/", verifyJWT, jobPost);
+router.get("/", verifyJWT, getJobs);
+router.get("/application/:id", verifyJWT, getJobAplications);
+router.post("/apply", verifyJWT, applyJob);
 module.exports = router;
